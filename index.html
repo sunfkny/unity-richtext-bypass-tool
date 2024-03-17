@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity Rich Text Bypass Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="inputText" oninput="convertOnInput()"></textarea>
+    <textarea id="outputHTML" readonly></textarea>
+
+    <script>
+        function convertTag(tag_name) {
+            var convertedTag = "";
+            for (var i = 0; i < tag_name.length; i++) {
+                var charCode = tag_name.charCodeAt(i);
+                charCode += Math.floor(Math.random() * 4 + 2) * 256;
+                convertedTag += String.fromCharCode(charCode);
+            }
+            return convertedTag;
+        }
+
+        function convertHtml(html) {
+            var tags = ["color", "size", "b", "i", "quad"];
+            for (var i = 0; i < tags.length; i++) {
+                var tag = tags[i];
+                var newTag = convertTag(tag);
+                var regexOpen = new RegExp("<" + tag, "g");
+                var regexClose = new RegExp(tag + ">", "g");
+                html = html.replace(regexOpen, "<" + newTag);
+                html = html.replace(regexClose, newTag + ">");
+            }
+            return html;
+        }
+
+        function convertOnInput() {
+            var inputText = document.getElementById('inputText').value;
+            var convertedHTML = convertHtml(inputText);
+            document.getElementById('outputHTML').value = convertedHTML;
+        }
+
+        document.getElementById('inputText').value = '<color=#96e><size=50>转圈圈~</size></color>'
+        convertOnInput();
+    </script>
+</body>
+</html>
