@@ -31,7 +31,7 @@
             let convertedTag = "";
             for (let i = 0; i < tag_name.length; i++) {
                 let charCode = tag_name.charCodeAt(i);
-                charCode += Math.floor(Math.random() * 4 + 2) * 256;
+                charCode += (Math.floor(Math.random() * 128) + 2) * 256;
                 convertedTag += String.fromCharCode(charCode);
             }
             return convertedTag;
@@ -60,7 +60,6 @@
                 let previewHtml = linearconverter(inputText)
                 previewHtml = nestedconverter(previewHtml)
                 previewHtml = paragraphconverter(previewHtml)
-                console.log(previewHtml)
                 document.getElementById('preview').innerHTML = previewHtml
             } catch (error) {
                 document.getElementById('preview').innerHTML = String(e)
