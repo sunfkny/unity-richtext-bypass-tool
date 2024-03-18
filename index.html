@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unity Rich Text Bypass Tool</title>
+    <script src="./unity-rich-text-converter.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
         }
+
         textarea {
             width: 100%;
             height: 200px;
@@ -17,15 +20,17 @@
         }
     </style>
 </head>
+
 <body>
     <textarea id="inputText" oninput="convertOnInput()"></textarea>
-    <textarea id="outputHTML" readonly></textarea>
+    <textarea id="outputHTML"></textarea>
+    <div id="preview"></div>
 
     <script>
         function convertTag(tag_name) {
-            var convertedTag = "";
-            for (var i = 0; i < tag_name.length; i++) {
-                var charCode = tag_name.charCodeAt(i);
+            let convertedTag = "";
+            for (let i = 0; i < tag_name.length; i++) {
+                let charCode = tag_name.charCodeAt(i);
                 charCode += Math.floor(Math.random() * 4 + 2) * 256;
                 convertedTag += String.fromCharCode(charCode);
             }
@@ -33,26 +38,46 @@
         }
 
         function convertHtml(html) {
-            var tags = ["color", "size", "b", "i", "quad"];
-            for (var i = 0; i < tags.length; i++) {
-                var tag = tags[i];
-                var newTag = convertTag(tag);
-                var regexOpen = new RegExp("<" + tag, "g");
-                var regexClose = new RegExp(tag + ">", "g");
-                html = html.replace(regexOpen, "<" + newTag);
-                html = html.replace(regexClose, newTag + ">");
+            const tags = ["color", "size", "b", "i", "quad"];
+            for (const tag of tags) {
+                const newTag = convertTag(tag);
+                html = html.replaceAll('<' + tag, '<' + newTag);
+                html = html.replaceAll(tag + '>', newTag + '>');
+            }
+            const props = ["size"];
+            for (const prop of props) {
+                const newProp = convertTag(prop);
+                html = html.replaceAll(prop + '=', newProp + '=');
             }
             return html;
         }
 
         function convertOnInput() {
-            var inputText = document.getElementById('inputText').value;
-            var convertedHTML = convertHtml(inputText);
+            const inputText = document.getElementById('inputText').value;
+            const convertedHTML = convertHtml(inputText);
             document.getElementById('outputHTML').value = convertedHTML;
+            try {
+                let previewHtml = linearconverter(inputText)
+                previewHtml = nestedconverter(previewHtml)
+                previewHtml = paragraphconverter(previewHtml)
+                console.log(previewHtml)
+                document.getElementById('preview').innerHTML = previewHtml
+            } catch (error) {
+                document.getElementById('preview').innerHTML = String(e)
+            }
         }
 
-        document.getElementById('inputText').value = '<color=#96e><size=50>转圈圈~</size></color>'
+        document.getElementById('inputText').value = `<b>粗体</b>
+<i>斜体</i>
+<color=#96e>颜色</color>
+<size=50>大小</size>
+
+<color=#96e><size=50><i><b>转圈圈~</b></i></size></color>
+
+<quad size=50 />
+`
         convertOnInput();
     </script>
 </body>
+
 </html>
