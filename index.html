@@ -61,7 +61,7 @@
                 previewHtml = nestedconverter(previewHtml)
                 previewHtml = paragraphconverter(previewHtml)
                 document.getElementById('preview').innerHTML = previewHtml
-            } catch (error) {
+            } catch (e) {
                 document.getElementById('preview').innerHTML = String(e)
             }
         }
